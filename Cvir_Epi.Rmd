@@ -16,33 +16,29 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r, engine = 'bash'}
 
+perl -e '$count=0; $len=0; while(<>) {s/\r?\n//; s/\t/ /g; if (s/^>//) { if ($. != 1) {print "\n"} s/ |$/\t/; $count++; $_ .= "\t";} else {s/ //g; $len += length($_)} print $_;} print "\n"; warn "\nConverted $count FASTA records in $. lines to tabular format\nTotal sequence length: $len\n\n";' \ Pop_Fastas/GCF_002022765.2_C_virginica-3.0_rna.fna | cut -f1,3 > Output/fasta2tab
 
+head Output/fasta2tab
 
-'for file in "file list"
-do
+perl -e '$col = 1;' -e 'while (<>) { s/\r?\n//; @F = split /\t/, $_; $len = length($F[$col]); print "$_\t$len\n" } warn "\nAdded column with length of column $col for $. lines.\n\n";' \ Output/fasta2tab > Output/tab_1
 
-perl -e '$count=0; $len=0; while(<>) {s/\r?\n//; s/\t/ /g; if (s/^>//) { if ($. != 1) {print "\n"} s/ |$/\t/; $count++; $_ .= "\t";} else {s/ //g; $len += length($_)} print $_;} print "\n"; warn "\nConverted $count FASTA records in $. lines to tabular format\nTotal sequence length: $len\n\n";' \ Pop_Fastas/{file} | cut -f1,3 > Output/{file}_fasta2tab
+awk '{print $2}' Output/tab_1 > Output/tab_2
 
-perl -e '$col = 1;' -e 'while (<>) { s/\r?\n//; @F = split /\t/, $_; $len = length($F[$col]); print "$_\t$len\n" } warn "\nAdded column with length of column $col for $. lines.\n\n";' \ Output/{file}_fasta2tab > Output/{file}_tab_1
+echo "CG" | awk -F\[Cc][Gg] '{print NF-1}' Output/tab_2 > Output/CG 
 
-awk '{print $2}' Output/{file}_tab_1 > Output/{file}_tab_2
+echo "C" | awk -F\[Cc] '{print NF-1}' Output/tab_2 > Output/C 
 
-echo "CG" | awk -F\[Cc][Gg] '{print NF-1}' Output/{file}_tab_2 > Output/{file}_CG 
+echo "G" | awk -F\[Gg] '{print NF-1}' Output/tab_2 > Output/G 
 
-echo "C" | awk -F\[Cc] '{print NF-1}' Output/{file}_tab_2 > Output/{file}_C 
+paste Output/tab_1 \
+Output/CG \
+Output/C \
+Output/G \
+> Output/comb
 
-echo "G" | awk -F\[Gg] '{print NF-1}' Output/{file}_tab_2 > Output/{file}_G 
+awk '{print $1, "\t", (($4)/($5*$6))*(($3^2)/($3-1))}' Output/comb > Output/ID_CpG
 
-paste Output/{file}_tab_1 \
-Output/{file}_CG \
-Output/{file}_C \
-Output/{file}_G \
-> Output/{file}_comb
-
-awk '{print $1, "\t", (($4)/($5*$6))*(($3^2)/($3-1))}' Output/{file}_comb > Output/{file}_ID_CpG
-
-awk '{print $2}' Output/{file}_ID_CpG | sed '/-nan/d' > Output/{file}_CpG
-done'
+awk '{print $2}' Output/ID_CpG | sed '/-nan/d' > Output/CpG
 
 ```
 
