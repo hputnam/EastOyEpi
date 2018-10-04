@@ -1,0 +1,70 @@
+---
+title: "Cvir_Epi"
+author: "HM Putnam"
+date: "10/4/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Extract historical DNA methylation via calculation of CpGo/e for each gene in the C. virginica genome
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{CpGoe Extraction}
+
+setwd("~/MyProjects/EastOyEpi/")
+
+sub 's/\len.*//' -e 's/\path.*//' GCF_002022765.2_C_virginica-3.0_rna.fna > genes2.fna
+
+sub 's/lcl|//' Sym_seqs.fasta > Sym.fasta
+sed -e 's/\P_dam_larvae_.*//' Sym.fasta > Sym2.fasta
+
+perl -e '$count=0; $len=0; while(<>) {s/\r?\n//; s/\t/ /g; if (s/^>//) { if ($. != 1) {print "\n"} s/ |$/\t/; $count++; $_ .= "\t";} else {s/ //g; $len += length($_)} print $_;} print "\n"; warn "\nConverted $count FASTA records in $. lines to tabular format\nTotal sequence length: $len\n\n";' \ SH_contigs.fasta > /home/hputnam/CpG/fasta2tab
+
+perl -e '$col = 2;' -e 'while (<>) { s/\r?\n//; @F = split /\t/, $_; $len = length($F[$col]); print "$_\t$len\n" } warn "\nAdded column with length of column $col for $. lines.\n\n";' \ fasta2tab > tab_1
+
+awk '{print $2}' tab_1 > tab_2
+
+echo "CG" | awk -F\[Cc][Gg] '{print NF-1}' tab_2 > CG 
+
+echo "C" | awk -F\[Cc] '{print NF-1}' tab_2 > C 
+
+echo "G" | awk -F\[Gg] '{print NF-1}' tab_2 > G 
+
+paste tab_1 \
+CG \
+C \
+G \
+> comb
+
+awk '{print $1, "\t", (($4)/($5*$6))*(($3^2)/($3-1))}' comb > ID_CpG
+
+awk '{print $2}' ID_CpG | sed '/-nan/d' > CpG
+
+```
+
+```{GO Slim}
+BP.Ids <- as.character(BP.INT$category)
+myCollection <- GOCollection(BP.Ids)
+fl <- "http://www.geneontology.org/ontology/subsets/goslim_generic.obo"
+slim <- getOBOCollection(fl, evidenceCode="TAS")
+BP.slim.INT <- goSlim(myCollection, slim, "BP")
+BP.slim.INT <-BP.slim.INT[,c(1,3)]
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
