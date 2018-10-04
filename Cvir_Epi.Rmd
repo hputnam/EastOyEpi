@@ -42,7 +42,20 @@ awk '{print $2}' Output/ID_CpG | sed '/-nan/d' > Output/CpG
 
 ```
 
-```{GO Slim}
+```{Merge CpG with Annotation}
+
+#sort
+
+paste \
+Output/ID_CpG \
+Output/ID_CpG | awk '{print $1, "\t", $3}' | sort | sed 's/ //g'> Output/ID_CpG.sorted
+head Output/ID_CpG.sorted
+
+
+```
+
+
+```{Generate GO Slim Terms}
 BP.Ids <- as.character(BP.INT$category)
 myCollection <- GOCollection(BP.Ids)
 fl <- "http://www.geneontology.org/ontology/subsets/goslim_generic.obo"
