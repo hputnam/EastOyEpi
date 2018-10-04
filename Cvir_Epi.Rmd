@@ -13,40 +13,36 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## R Markdown
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+```{r, engine = 'bash'}
 
-```{CpGoe Extraction}
 
-setwd("~/MyProjects/EastOyEpi/")
 
-sub 's/\len.*//' -e 's/\path.*//' GCF_002022765.2_C_virginica-3.0_rna.fna > genes2.fna
+'for file in "file list"
+do
 
-sub 's/lcl|//' Sym_seqs.fasta > Sym.fasta
-sed -e 's/\P_dam_larvae_.*//' Sym.fasta > Sym2.fasta
+perl -e '$count=0; $len=0; while(<>) {s/\r?\n//; s/\t/ /g; if (s/^>//) { if ($. != 1) {print "\n"} s/ |$/\t/; $count++; $_ .= "\t";} else {s/ //g; $len += length($_)} print $_;} print "\n"; warn "\nConverted $count FASTA records in $. lines to tabular format\nTotal sequence length: $len\n\n";' \ Pop_Fastas/{file} | cut -f1,3 > Output/{file}_fasta2tab
 
-perl -e '$count=0; $len=0; while(<>) {s/\r?\n//; s/\t/ /g; if (s/^>//) { if ($. != 1) {print "\n"} s/ |$/\t/; $count++; $_ .= "\t";} else {s/ //g; $len += length($_)} print $_;} print "\n"; warn "\nConverted $count FASTA records in $. lines to tabular format\nTotal sequence length: $len\n\n";' \ SH_contigs.fasta > /home/hputnam/CpG/fasta2tab
+perl -e '$col = 1;' -e 'while (<>) { s/\r?\n//; @F = split /\t/, $_; $len = length($F[$col]); print "$_\t$len\n" } warn "\nAdded column with length of column $col for $. lines.\n\n";' \ Output/{file}_fasta2tab > Output/{file}_tab_1
 
-perl -e '$col = 2;' -e 'while (<>) { s/\r?\n//; @F = split /\t/, $_; $len = length($F[$col]); print "$_\t$len\n" } warn "\nAdded column with length of column $col for $. lines.\n\n";' \ fasta2tab > tab_1
+awk '{print $2}' Output/{file}_tab_1 > Output/{file}_tab_2
 
-awk '{print $2}' tab_1 > tab_2
+echo "CG" | awk -F\[Cc][Gg] '{print NF-1}' Output/{file}_tab_2 > Output/{file}_CG 
 
-echo "CG" | awk -F\[Cc][Gg] '{print NF-1}' tab_2 > CG 
+echo "C" | awk -F\[Cc] '{print NF-1}' Output/{file}_tab_2 > Output/{file}_C 
 
-echo "C" | awk -F\[Cc] '{print NF-1}' tab_2 > C 
+echo "G" | awk -F\[Gg] '{print NF-1}' Output/{file}_tab_2 > Output/{file}_G 
 
-echo "G" | awk -F\[Gg] '{print NF-1}' tab_2 > G 
+paste Output/{file}_tab_1 \
+Output/{file}_CG \
+Output/{file}_C \
+Output/{file}_G \
+> Output/{file}_comb
 
-paste tab_1 \
-CG \
-C \
-G \
-> comb
+awk '{print $1, "\t", (($4)/($5*$6))*(($3^2)/($3-1))}' Output/{file}_comb > Output/{file}_ID_CpG
 
-awk '{print $1, "\t", (($4)/($5*$6))*(($3^2)/($3-1))}' comb > ID_CpG
-
-awk '{print $2}' ID_CpG | sed '/-nan/d' > CpG
+awk '{print $2}' Output/{file}_ID_CpG | sed '/-nan/d' > Output/{file}_CpG
+done'
 
 ```
 

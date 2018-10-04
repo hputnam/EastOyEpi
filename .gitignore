@@ -3,5 +3,6 @@ GCF_002022765.2_C_virginica-3.0_rna.fna
 data/ref_C_virginica-3.0_Gnomon_gene.fa
 analyses/1004/
 analyses/1004b/
-C
 .Rproj.user
+Output/
+Pop_Fastas/
