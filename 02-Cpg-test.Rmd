@@ -1,0 +1,60 @@
+---
+title: "02-Cpg-test"
+output: html_document
+---
+
+
+```{bash}
+head -2 /Users/sr320/Documents/GitHub/EastOyEpi/data/ref_C_virginica-3.0_Gnomon_gene.fa
+echo 
+echo number of seqs =
+fgrep -c ">" /Users/sr320/Documents/GitHub/EastOyEpi/data/ref_C_virginica-3.0_Gnomon_gene.fa
+```
+
+
+```{bash}
+perl -e '$count=0; $len=0; while(<>) {s/\r?\n//; s/\t/ /g; if (s/^>//) { if ($. != 1) {print "\n"} s/ |$/\t/; $count++; $_ .= "\t";} else {s/ //g; $len += length($_)} print $_;} print "\n"; warn "\nConverted $count FASTA records in $. lines to tabular format\nTotal sequence length: $len\n\n";' \
+/Users/sr320/Documents/GitHub/EastOyEpi/data/ref_C_virginica-3.0_Gnomon_gene.fa | cut -f1,3 > analyses/1004b/fasta2tab
+```
+
+```{bash}
+head -2 analyses/1004b/fasta2tab
+```
+
+```{bash}
+perl -e '$col = 1;' -e 'while (<>) { s/\r?\n//; @F = split /\t/, $_; $len = length($F[$col]); print "$_\t$len\n" } warn "\nAdded column with length of column $col for $. lines.\n\n";' \
+analyses/1004b/fasta2tab > analyses/1004b/tab_1
+
+head analyses/1004b/tab_1
+```
+
+
+```{bash}
+awk '{print $2}' analyses/1004b/tab_1 > analyses/1004b/tab_2
+
+echo "CG" | awk -F\[Cc][Gg] '{print NF-1}' analyses/1004b/tab_2 > analyses/1004b/CG 
+
+echo "C" | awk -F\[Cc] '{print NF-1}' analyses/1004b/tab_2 > analyses/1004b/C 
+echo "G" | awk -F\[Gg] '{print NF-1}' analyses/1004b/tab_2 > analyses/1004b/G
+
+paste analyses/1004b/tab_1 \
+analyses/1004b/CG \
+analyses/1004b/C \
+analyses/1004b/G \
+> analyses/1004b/comb
+head -1 analyses/1004b/comb
+
+```
+
+
+```{bash}
+awk '{print $1, "\t", (($4)/($5*$6))*(($3^2)/($3-1))}' analyses/1004b/comb > analyses/1004b/ID_CpG
+
+
+head analyses/1004b/ID_CpG
+```
+
+
+
+
+
