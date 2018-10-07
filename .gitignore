@@ -11,3 +11,10 @@ data/SNP.TRSdp5g75mtDNA.recode.vcf copy.gz
 data/test.vcf
 analyses/test_d
 analyses/test_consensus.fa
+data/tmp/
+analyses/2_CL_5.F.fa
+analyses/4_CL_5.F.fa
+analyses/CL_5.F.fa
+data/CL_5.F.bam
+data/CL_5.F.sorted.bam
+data/CL_5.F.sorted.bam.bai
