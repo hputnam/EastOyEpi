@@ -18,3 +18,5 @@ analyses/CL_5.F.fa
 data/CL_5.F.bam
 data/CL_5.F.sorted.bam
 data/CL_5.F.sorted.bam.bai
+analyses/Cv_gene_sprot.05.blastout
+jupyter/Cv_gene_sprot.05.blastout
