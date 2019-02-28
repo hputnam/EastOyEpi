@@ -2,7 +2,7 @@
 ## Methods
 
 
-### Resource Development
+### Resource Development: Canonical Genes
 In order to get a fasta file of all genes in the oyster genome
 
 ```
@@ -50,6 +50,7 @@ NC_035784.1:87478898-87496133	GO:0000002	cell organization and biogenesis	P
 
 
 ---
+### Resource Development: Consensus Gene Sequence for 91 samples
 
 Using `Combined.SNP.TRSdp5g95FnDNAmaf05.vcf.gz` (31GB) [link](http://gannet.fish.washington.edu/seashell/eog_v2/VCF_files/Combined.SNP.TRSdp5g95FnDNAmaf05.vcf.gz) separate VCF files were derived for each library. [Details](https://robertslab.github.io/sams-notebook/2019/01/02/VCF-Splitting-C.virginica-VCF-Using-BCFtools.html)
 
