@@ -75,3 +75,9 @@ find /Volumes/Serine/wd/19-01-08/*.fa \
 
 These 91 fasta files are available [here](http://gannet.fish.washington.edu/seashell/bu-serine-wd/19-01-08/). Both full genome `{}.fa` and gene `{}_GENE.fa`
 ([jupyter notebook](https://github.com/hputnam/EastOyEpi/blob/master/jupyter/10-Consensus-new-split.ipynb))
+
+
+---
+
+### CpG Observed / Expected Ratio Calculations
+This was [determined for all genes for all 91 samples](https://robertslab.github.io/sams-notebook/2019/02/26/Data-Wrangling-CpG-OE-Calculations-on-C.virginica-Genes.html). With [a single file](http://gannet.fish.washington.edu/Atumefaciens/20190225_cpg_oe/ID_CpG_labelled_all) with all data was created. 
