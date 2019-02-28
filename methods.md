@@ -13,3 +13,6 @@ bedtools getfasta \
 ```
 
 This fasta file is available: https://d.pr/f/nfzK36 (400MB)
+
+
+Using `Combined.SNP.TRSdp5g95FnDNAmaf05.vcf.gz` (31GB) [link](http://gannet.fish.washington.edu/seashell/eog_v2/VCF_files/Combined.SNP.TRSdp5g95FnDNAmaf05.vcf.gz) separate VCF files were derived for each library.
