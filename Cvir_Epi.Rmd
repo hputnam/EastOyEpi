@@ -1,7 +1,7 @@
 ---
-title: "Cvir_Epi"
+title: "Cvir_DNA_Meth_CpGOE"
 author: "HM Putnam"
-date: "10/4/2018"
+date: "02/28/2019"
 output: html_document
 ---
 
@@ -9,47 +9,24 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Extract historical DNA methylation via calculation of CpGo/e for each gene in the C. virginica genome
+## load germline DNA methylation via calculation of CpGo/e for each gene in the C. virginica genome
+
 
 ## R Markdown
 
+PCA for all CpG OE 
+GLM by overall for mean CpG OE
+GLM by population for mean CpG OE
+GLM by GOslim term and 
 
-```{r, engine = 'bash'}
 
-perl -e '$count=0; $len=0; while(<>) {s/\r?\n//; s/\t/ /g; if (s/^>//) { if ($. != 1) {print "\n"} s/ |$/\t/; $count++; $_ .= "\t";} else {s/ //g; $len += length($_)} print $_;} print "\n"; warn "\nConverted $count FASTA records in $. lines to tabular format\nTotal sequence length: $len\n\n";' \ Pop_Fastas/GCF_002022765.2_C_virginica-3.0_rna.fna | cut -f1,3 > Output/fasta2tab
 
-head Output/fasta2tab
-
-perl -e '$col = 1;' -e 'while (<>) { s/\r?\n//; @F = split /\t/, $_; $len = length($F[$col]); print "$_\t$len\n" } warn "\nAdded column with length of column $col for $. lines.\n\n";' \ Output/fasta2tab > Output/tab_1
-
-awk '{print $2}' Output/tab_1 > Output/tab_2
-
-echo "CG" | awk -F\[Cc][Gg] '{print NF-1}' Output/tab_2 > Output/CG 
-
-echo "C" | awk -F\[Cc] '{print NF-1}' Output/tab_2 > Output/C 
-
-echo "G" | awk -F\[Gg] '{print NF-1}' Output/tab_2 > Output/G 
-
-paste Output/tab_1 \
-Output/CG \
-Output/C \
-Output/G \
-> Output/comb
-
-awk '{print $1, "\t", (($4)/($5*$6))*(($3^2)/($3-1))}' Output/comb > Output/ID_CpG
-
-awk '{print $2}' Output/ID_CpG | sed '/-nan/d' > Output/CpG
-
-```
 
 ```{Merge CpG with Annotation}
 
-#sort
+#Merge GO Slim annotation and CpG
 
-paste \
-Output/ID_CpG \
-Output/ID_CpG | awk '{print $1, "\t", $3}' | sort | sed 's/ //g'> Output/ID_CpG.sorted
-head Output/ID_CpG.sorted
+
 
 
 ```
